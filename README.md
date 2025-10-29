@@ -46,7 +46,7 @@ MotoMind_AI/
 ## ▶️ Getting Started
 1. Clone this repository:  
 ```bash
-   git clone https://github.com/jayanth0706/MotoMind_AI.git
+   git clone https://github.com/JagadeshReddyPonnu/MotoMind_AI.git
    cd MotoMind_AI
 ```
 2. Install dependencies:
