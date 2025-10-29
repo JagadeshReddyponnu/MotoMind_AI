@@ -7,10 +7,23 @@ from PIL import Image
 import os
 import requests
 from io import BytesIO
+import subprocess
 
 # -------------------- CLIP MODEL SETUP --------------------
 device = "cuda" if torch.cuda.is_available() else "cpu"
-model, preprocess = clip.load("ViT-B/32", device=device)
+
+# --- Safe CLIP loading for Streamlit Cloud ---
+MODEL_DIR = os.path.expanduser("~/.cache/clip")
+os.makedirs(MODEL_DIR, exist_ok=True)
+
+try:
+    model, preprocess = clip.load("ViT-B/32", device=device, download_root=MODEL_DIR)
+except Exception as e:
+    st.warning("⚠️ Retrying CLIP model load via Git clone (first-time setup)...")
+    subprocess.run(["git", "clone", "https://github.com/openai/CLIP.git"])
+    import clip
+    model, preprocess = clip.load("ViT-B/32", device=device, download_root=MODEL_DIR)
+# -----------------------------------------------------------
 
 # -------------------- LOAD DATA --------------------
 @st.cache_data
@@ -202,7 +215,6 @@ def pick_price_source(row: pd.Series) -> str:
     return price_value if isinstance(price_value, str) else (str(price_value) if price_value is not None else "")
 
 
-# ---- Fixed apply() ----
 def safe_extract_mid_price(row: pd.Series) -> float:
     val = extract_mid_price(pick_price_source(row))
     return float(val) if val is not None else np.nan

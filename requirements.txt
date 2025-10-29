@@ -1,11 +1,9 @@
 streamlit
-pandas
-numpy
 torch
 torchvision
 ftfy
 regex
 tqdm
-Pillow
+pillow
 requests
 git+https://github.com/openai/CLIP.git
